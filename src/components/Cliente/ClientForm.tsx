@@ -15,6 +15,7 @@ interface ClienteFormProps {
   onSave: (data: ClienteFormData) => void;
   clienteEdit: Cliente | null;
   onCancel: () => void;
+  isLoading?: boolean;
 }
 
 const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
@@ -57,7 +58,7 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
           <label className="block text-sm font-medium text-gray-700 mb-1.5">Nombre</label>
           <input
             {...register('name')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="Juan"
           />
           {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
@@ -67,7 +68,7 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
           <label className="block text-sm font-medium text-gray-700 mb-1.5">Apellido</label>
           <input
             {...register('username')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="Pérez"
           />
           {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
@@ -78,7 +79,7 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
           <input
             type="email"
             {...register('email')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="juan@example.com"
           />
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}

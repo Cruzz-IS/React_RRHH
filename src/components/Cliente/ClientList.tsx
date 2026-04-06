@@ -2,12 +2,11 @@ import type { Cliente } from "../../Types/client.interface";
 
 interface ClienteListProps {
   clientes: Cliente[];
-  onEdit: (cliente: Cliente) => void;
   onDelete: (id: number) => void;
   loading: boolean;
 }
 
-const ClienteList = ({ clientes, onEdit, onDelete, loading }: ClienteListProps) => {
+const ClienteList = ({ clientes, onDelete, loading }: ClienteListProps) => {
   if (loading) return <p className="text-center py-12 text-gray-500">Cargando clientes...</p>;
 
   return (
@@ -30,9 +29,7 @@ const ClienteList = ({ clientes, onEdit, onDelete, loading }: ClienteListProps) 
                 <th className="px-8 py-4 text-left text-sm font-semibold text-gray-600">ID</th>
                 <th className="px-8 py-4 text-left text-sm font-semibold text-gray-600">Nombre Completo</th>
                 <th className="px-8 py-4 text-left text-sm font-semibold text-gray-600">Email</th>
-                <th className="px-8 py-4 text-left text-sm font-semibold text-gray-600">Teléfono</th>
-                <th className="px-8 py-4 text-left text-sm font-semibold text-gray-600">Fecha de Registro</th>
-                <th className="px-8 py-4 text-center text-sm font-semibold text-gray-600">Acciones</th>
+                <th className="px-8 py-4 text-left text-sm font-semibold text-gray-600">Username</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -46,12 +43,6 @@ const ClienteList = ({ clientes, onEdit, onDelete, loading }: ClienteListProps) 
                   <td className="px-8 py-5 text-gray-600">{cliente.name}</td>
                   <td className="px-8 py-5">
                     <div className="flex justify-center gap-3">
-                      <button
-                        onClick={() => onEdit(cliente)}
-                        className="bg-amber-100 hover:bg-amber-200 text-amber-700 px-6 py-2 rounded-lg text-sm font-medium transition"
-                      >
-                        Editar
-                      </button>
                       <button
                         onClick={() => onDelete(cliente.id)}
                         className="bg-red-100 hover:bg-red-200 text-red-700 px-6 py-2 rounded-lg text-sm font-medium transition"
