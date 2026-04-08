@@ -3,4 +3,5 @@ export interface Cliente {
   name: string;
   email: string;
   username: string;
+  password: string;
 }
