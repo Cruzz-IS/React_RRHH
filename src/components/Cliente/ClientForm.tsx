@@ -4,10 +4,10 @@ import * as z from "zod";
 import type { Cliente } from "../../Types/client.interface";
 
 const clienteSchema = z.object({
-  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-  email: z.string().email("Debe ser un email válido"),
-  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
-  username: z.string().min(2, "El apellido debe tener al menos 2 caracteres"),
+  Name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  Email: z.string().email("Debe ser un Email válido"),
+  PasswordHash: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
+  Username: z.string().min(2, "El apellido debe tener al menos 2 caracteres"),
 });
 
 type ClienteFormData = z.infer<typeof clienteSchema>;
@@ -29,10 +29,10 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
     resolver: zodResolver(clienteSchema),
     defaultValues: clienteEdit
       ? {
-          name: clienteEdit.name,
-          email: clienteEdit.email,
-          password: clienteEdit.password,
-          username: clienteEdit.username,
+          Name: clienteEdit.Name,
+          Email: clienteEdit.Email,
+          PasswordHash: clienteEdit.PasswordHash,
+          Username: clienteEdit.Username,
         }
       : undefined,
   });
@@ -62,12 +62,12 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
             Nombre
           </label>
           <input
-            {...register("name")}
+            {...register("Name")}
             className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="Juan"
           />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+          {errors.Name && (
+            <p className="text-red-500 text-sm mt-1">{errors.Name.message}</p>
           )}
         </div>
 
@@ -77,27 +77,27 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
           </label>
           <input
             type="email"
-            {...register("email")}
+            {...register("Email")}
             className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="juan@example.com"
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+          {errors.Email && (
+            <p className="text-red-500 text-sm mt-1">{errors.Email.message}</p>
           )}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Password
+            PasswordHash
           </label>
           <input
-            type="password"
-            {...register("password")}
+            type="PasswordHash"
+            {...register("PasswordHash")}
             className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="*****"
           />
-          {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+          {errors.PasswordHash && (
+            <p className="text-red-500 text-sm mt-1">{errors.PasswordHash.message}</p>
           )}
         </div>
 
@@ -106,13 +106,13 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
             Username
           </label>
           <input
-            {...register("username")}
+            {...register("Username")}
             className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="Pérez"
           />
-          {errors.username && (
+          {errors.Username && (
             <p className="text-red-500 text-sm mt-1">
-              {errors.username.message}
+              {errors.Username.message}
             </p>
           )}
         </div>

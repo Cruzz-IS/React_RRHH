@@ -34,17 +34,17 @@ const ClienteList = ({ clientes, onDelete, loading }: ClienteListProps) => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {clientes.map((cliente) => (
-                <tr key={cliente.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-8 py-5 font-medium text-gray-700">{cliente.id}</td>
+                <tr key={cliente.Id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-8 py-5 font-medium text-gray-700">{cliente.Id}</td>
                   <td className="px-8 py-5 text-gray-800 font-medium">
-                    {cliente.name} {cliente.username}
+                    {cliente.Name} {cliente.Username}
                   </td>
-                  <td className="px-8 py-5 text-gray-600">{cliente.email}</td>
-                  <td className="px-8 py-5 text-gray-600">{cliente.name}</td>
+                  <td className="px-8 py-5 text-gray-600">{cliente.Email}</td>
+                  <td className="px-8 py-5 text-gray-600">{cliente.Name}</td>
                   <td className="px-8 py-5">
                     <div className="flex justify-center gap-3">
                       <button
-                        onClick={() => onDelete(cliente.id)}
+                        onClick={() => onDelete(cliente.Id)}
                         className="bg-red-100 hover:bg-red-200 text-red-700 px-6 py-2 rounded-lg text-sm font-medium transition"
                       >
                         Eliminar

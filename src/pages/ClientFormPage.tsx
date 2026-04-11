@@ -28,7 +28,7 @@ const ClienteFormPage = () => {
     }
   }, [id, navigate]);
 
-  const handleSave = async (data: Omit<Cliente, 'id'>) => {
+  const handleSave = async (data: Omit<Cliente, 'Id'>) => {
     setLoading(true);
     try {
       if (id) {
