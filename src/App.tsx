@@ -10,7 +10,7 @@ function App() {
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         
-        <div className="max-w-7xl mx-auto">
+        <div className="container mx-auto py-10">
           <Routes>
             <Route path="/" element={<ClientesListPage />} />
             <Route path="/clientes" element={<ClientesListPage />} />

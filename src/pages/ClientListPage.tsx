@@ -13,7 +13,6 @@ const ClientesListPage = () => {
   const fetchClientes = async () => {
     try {
       const res = await axios.get<Cliente[]>(API_URL);
-      console.log(res.data);
       setClientes(res.data);
     } catch (error) {
       console.error(error);
