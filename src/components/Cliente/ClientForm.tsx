@@ -58,12 +58,12 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm text-start font-medium text-gray-700 mb-1.5">
             Nombre
           </label>
           <input
             {...register("Name")}
-            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+            className="w-full h-8 px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="Juan"
           />
           {errors.Name && (
@@ -72,13 +72,13 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm text-start font-medium text-gray-700 mb-1.5">
             Email
           </label>
           <input
             type="email"
             {...register("Email")}
-            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+            className="w-full h-8 px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="juan@example.com"
           />
           {errors.Email && (
@@ -87,13 +87,13 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm text-start font-medium text-gray-700 mb-1.5">
             PasswordHash
           </label>
           <input
             type="PasswordHash"
             {...register("PasswordHash")}
-            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+            className="w-full h-8 px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="*****"
           />
           {errors.PasswordHash && (
@@ -102,12 +102,12 @@ const ClienteForm = ({ onSave, clienteEdit, onCancel }: ClienteFormProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm text-start font-medium text-gray-700 mb-1.5">
             Username
           </label>
           <input
             {...register("Username")}
-            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+            className="w-full h-8 px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
             placeholder="Pérez"
           />
           {errors.Username && (
