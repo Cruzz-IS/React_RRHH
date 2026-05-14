@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://api.bac.com/api',
+  baseURL: import.meta.env.VITE_API_URL,
   headers: { 'Content-Type': 'application/json' }
 });
 
@@ -26,7 +26,7 @@ api.interceptors.response.use(
         const refreshToken = localStorage.getItem('refreshToken');
         const accessToken = localStorage.getItem('accessToken');
 
-        const { data } = await axios.post('https://api.bac.com/api/auth/refresh-token', {
+        const { data } = await axios.post('/auth/refresh-token', {
           accessToken,
           refreshToken
         });
