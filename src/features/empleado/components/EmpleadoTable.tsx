@@ -26,6 +26,30 @@ export default function EmpleadoTable() {
   }, []);
 
   return (
-    <div>EmpleadoTable</div>
+    <div>
+      <h2>Empleados</h2>
+      {loading ? (
+        <p>Cargando...</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {empleados.map((empleado) => (
+              <tr key={empleado.Id}>
+                <td>{empleado.Id}</td>
+                <td>{empleado.Name}</td>
+                <td>{empleado.Email}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
   )
 }
