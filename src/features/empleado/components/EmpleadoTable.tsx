@@ -1,9 +1,8 @@
-import type { Empleado } from '@/Types/client.interface';
-import axios from 'axios';
-import  { useEffect, useState } from 'react'
+import type { Empleado } from "@/Types/client.interface";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function EmpleadoTable() {
-
   const API_URL = import.meta.env.VITE_API_URL as string;
 
   const [empleados, setEmpleados] = useState<Empleado[]>([]);
@@ -15,7 +14,7 @@ export default function EmpleadoTable() {
       setEmpleados(res.data);
     } catch (error) {
       console.error(error);
-      alert('Error al cargar los clientes');
+      alert("Error al cargar los clientes");
     } finally {
       setLoading(false);
     }
@@ -28,6 +27,12 @@ export default function EmpleadoTable() {
   return (
     <div>
       <h2>Empleados</h2>
+      <div>
+        <button onClick={fetchEmpleados}>Refrescar</button>
+      </div>
+      <div>
+        <input type="text" placeholder="Buscar" >Buscar</input>
+      </div>
       {loading ? (
         <p>Cargando...</p>
       ) : (
@@ -51,5 +56,5 @@ export default function EmpleadoTable() {
         </table>
       )}
     </div>
-  )
+  );
 }
