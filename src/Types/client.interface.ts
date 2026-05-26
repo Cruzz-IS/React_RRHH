@@ -19,3 +19,55 @@ export interface Empleado {
   // UpdatedBy: string;
   // Roles: string[];
 }
+
+export interface Empleado {
+  id: number;
+  pnombre: string;
+  snombre?: string;
+  papellido: string;
+  sapellido?: string;
+  email: string;
+  telefono?: string;
+  direccion?: string;
+  numeroIdentidad?: string;
+  genero?: 'M' | 'F' | 'O';
+  fechaNacimiento?: string;
+  estadoCivil?: string;
+  tipoContrato?: string;
+  incrementoSueldo: number;
+  isActive: boolean;
+  role: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+ 
+export interface CreateEmpleadoDto {
+  pnombre: string;
+  snombre?: string;
+  papellido: string;
+  sapellido?: string;
+  email: string;
+  password: string;
+  telefono?: string;
+  direccion?: string;
+  numeroIdentidad?: string;
+  genero?: 'M' | 'F' | 'O';
+  fechaNacimiento?: string;
+  estadoCivil?: string;
+  tipoContrato?: string;
+}
+ 
+export interface UpdateEmpleadoDto {
+  pnombre?: string;
+  snombre?: string;
+  papellido?: string;
+  sapellido?: string;
+  email?: string;
+  telefono?: string;
+  direccion?: string;
+  genero?: 'M' | 'F' | 'O';
+  fechaNacimiento?: string;
+  estadoCivil?: string;
+  tipoContrato?: string;
+  isActive?: boolean;
+}
