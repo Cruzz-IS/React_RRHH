@@ -1,3 +1,11 @@
+export interface Cliente {
+  Id: number;
+  Name: string;
+  Email: string;
+  Username?: string;
+  PasswordHash: string;
+}
+
 export interface Empleado {
   Id: number;
   Name: string;

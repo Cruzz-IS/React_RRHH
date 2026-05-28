@@ -1,17 +1,19 @@
 import api from '../../api/axios';
-import type { AuthResponse, LoginCredentials, User } from '../../Types/auth.interface';
+import type { AuthResponse, LoginCredentials, UserInfo } from '../../Types/auth.interface';
 
 export const authService = {
 
-  login: async (credentials: LoginCredentials): Promise<User> => {
+  login: async (credentials: LoginCredentials): Promise<UserInfo> => {
     const { data } = await api.post<AuthResponse>('/auth/login', credentials);
-    
-    if (data.success) {
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      return data.user;
+
+    if (!data.success || !data.accessToken || !data.refreshToken || !data.user) {
+      throw new Error(data.message || 'Error en el inicio de sesión');
     }
+
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    return data.user;
     
     throw new Error(data.message || 'Error en el inicio de sesión');
   },
@@ -30,8 +32,8 @@ export const authService = {
     }
   },
 
-  getUsers: async (): Promise<User[]> => {
-    const { data } = await api.get<User[]>('/users');
+  getUsers: async (): Promise<UserInfo[]> => {
+    const { data } = await api.get<UserInfo[]>('/users');
     return data;
   }
 };

@@ -61,11 +61,11 @@ export const removeRefreshToken = (): void => {
 };
  
  
-export const setUserInfo = (user: Record<string, unknown>): void => {
+export const setUserInfo = (user: unknown): void => {
   sessionStorage.setItem(USER_KEY, JSON.stringify(user));
 };
  
-export const getUserInfo = <T = Record<string, unknown>>(): T | null => {
+export const getUserInfo = <T = unknown>(): T | null => {
   const raw = sessionStorage.getItem(USER_KEY);
   if (!raw) return null;
   try {

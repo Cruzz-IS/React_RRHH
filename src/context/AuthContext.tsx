@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
   useCallback,
@@ -123,7 +124,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const refreshToken = TokenService.getRefreshToken();
     try {
       if (refreshToken) await AuthApi.logout(refreshToken);
-    } catch {
+    } catch (error) {
+      console.error('Failed to refresh user', error);
     } finally {
       TokenService.clearAllTokens();
       setUser(null);
@@ -139,7 +141,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         TokenService.setUserInfo(data);
         setUser(data);
       }
-    } catch {
+    } catch (error) {
+      console.error('Failed to refresh user', error);
     }
   }, []);
  
