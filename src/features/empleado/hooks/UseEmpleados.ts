@@ -1,6 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
-import EmpleadosApi from '../../../api/endpoints/empleados.api';
-import type { Empleado, PaginatedResponse } from '../../../Types';
+import { isAxiosError } from 'axios';
+import EmpleadosApi from '../api/endpoints/empleados.api';
+import type { Empleado, PaginatedResponse } from '../types';
+ 
+const extractErrorMessage = (error: unknown, fallback: string): string => {
+  if (isAxiosError(error)) {
+    const msg = error.response?.data?.message;
+    return typeof msg === 'string' ? msg : fallback;
+  }
+  if (error instanceof Error) return error.message;
+  return fallback;
+};
  
 interface UseEmpleadosOptions {
   initialPage?: number;
@@ -8,16 +18,37 @@ interface UseEmpleadosOptions {
   autoFetch?: boolean;
 }
  
+interface Pagination {
+  totalCount: number;
+  totalPages: number;
+  pageNumber: number;
+  pageSize: number;
+}
+ 
+interface UseEmpleadosReturn {
+  empleados: Empleado[];
+  pagination: Pagination;
+  isLoading: boolean;
+  error: string | null;
+  page: number;
+  search: string;
+  setPage: (page: number) => void;
+  setSearch: (search: string) => void;
+  refetch: () => Promise<void>;
+  deleteEmpleado: (id: number) => Promise<boolean>;
+  clearError: () => void;
+}
+ 
 export const useEmpleados = ({
   initialPage = 1,
   pageSize = 10,
   autoFetch = true,
-}: UseEmpleadosOptions = {}) => {
-  const [data, setData] = useState<PaginatedResponse<Empleado> | null>(null);
+}: UseEmpleadosOptions = {}): UseEmpleadosReturn => {
+  const [data, setData]       = useState<PaginatedResponse<Empleado> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(initialPage);
-  const [search, setSearch] = useState('');
+  const [error, setError]     = useState<string | null>(null);
+  const [page, setPage]       = useState(initialPage);
+  const [search, setSearch]   = useState('');
  
   const fetchEmpleados = useCallback(async () => {
     setIsLoading(true);
@@ -26,38 +57,40 @@ export const useEmpleados = ({
       const { data: response } = await EmpleadosApi.getAll({
         pageNumber: page,
         pageSize,
-        search: search || undefined,
+        search: search.trim() || undefined,
       });
       setData(response);
-    } catch (err: any) {
-      setError(err?.response?.data?.message ?? 'Error al cargar empleados');
+    } catch (err: unknown) {
+      setError(extractErrorMessage(err, 'Error al cargar empleados'));
     } finally {
       setIsLoading(false);
     }
   }, [page, pageSize, search]);
  
   useEffect(() => {
-    if (autoFetch) fetchEmpleados();
+    if (autoFetch) void fetchEmpleados();
   }, [autoFetch, fetchEmpleados]);
  
-  const deleteEmpleado = async (id: number) => {
+  const deleteEmpleado = useCallback(async (id: number): Promise<boolean> => {
     try {
       await EmpleadosApi.delete(id);
-      await fetchEmpleados(); // refrescar lista
+      await fetchEmpleados();
       return true;
-    } catch (err: any) {
-      setError(err?.response?.data?.message ?? 'Error al eliminar empleado');
+    } catch (err: unknown) {
+      setError(extractErrorMessage(err, 'Error al eliminar empleado'));
       return false;
     }
-  };
+  }, [fetchEmpleados]);
+ 
+  const clearError = useCallback(() => setError(null), []);
  
   return {
-    empleados: data?.items ?? [],
+    empleados:  data?.items ?? [],
     pagination: {
       totalCount: data?.totalCount ?? 0,
       totalPages: data?.totalPages ?? 0,
       pageNumber: data?.pageNumber ?? page,
-      pageSize: data?.pageSize ?? pageSize,
+      pageSize:   data?.pageSize   ?? pageSize,
     },
     isLoading,
     error,
@@ -67,5 +100,6 @@ export const useEmpleados = ({
     setSearch,
     refetch: fetchEmpleados,
     deleteEmpleado,
+    clearError,
   };
 };
