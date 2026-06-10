@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
 import type { LoginFormValues } from '../schemas/login.schema';
+import { useAuth } from '@/hooks/useAuth';
  
 export const useLogin = (redirectTo = '/dashboard') => {
   const { login } = useAuth();
@@ -15,12 +15,19 @@ export const useLogin = (redirectTo = '/dashboard') => {
     try {
       await login(values);
       navigate(redirectTo, { replace: true });
-    } catch (err: any) {
-      const msg =
-        err?.response?.data?.message ??
-        err?.message ??
-        'Error al iniciar sesión';
-      setError(msg);
+    } catch (err: unknown) {
+        const msg = (() => {
+          if (typeof err === 'object' && err !== null) {
+            const e = err as {
+              response?: { data?: { message?: string } };
+              message?: string;
+            };
+            return e.response?.data?.message ?? e.message ?? 'Error al iniciar sesión';
+          }
+          if (typeof err === 'string') return err;
+          return 'Error al iniciar sesión';
+        })();
+        setError(msg);
     } finally {
       setIsLoading(false);
     }

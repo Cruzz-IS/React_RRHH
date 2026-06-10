@@ -60,7 +60,7 @@ export const useEmpleados = ({
         pageSize,
         search: search.trim() || undefined,
       });
-      setData(res);
+      setData(res as PaginatedResponse<Empleado>);
     } catch (err: unknown) {
       setError(extractMessage(err, "Error al cargar empleados"));
     } finally {
