@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { isAxiosError } from "axios";
-import EmpleadosApi from "../api/endpoints/empleados.api";
 import type { Empleado } from "@/Types/client.interface";
 import type { PaginatedResponse } from "@/Types/api.types";
+import EmpleadosApi from "@/api/endpoints/empleados.api";
 
 const extractMessage = (err: unknown, fallback: string): string => {
   if (isAxiosError(err)) {

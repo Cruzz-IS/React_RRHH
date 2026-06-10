@@ -4,9 +4,8 @@ import { isAxiosError } from 'axios';
 import { useAuth } from '../hooks/useAuth';
 import TokenService from '../services/token.service';
 import AuthApi from '../api/endpoints/auth.api';
- 
+
 // Verifica  el estado del token y lo refresca cada 7 minutos de forma silenciosa antes de que expire.
- 
 interface AuthMiddlewareProps {
   children: ReactNode;
 }
@@ -28,7 +27,6 @@ export const AuthMiddleware = ({ children }: AuthMiddlewareProps) => {
             accessToken:  accessToken ?? '',
             refreshToken,
           });
- 
           if (data.success && data.accessToken && data.refreshToken) {
             TokenService.setAccessToken(data.accessToken);
             TokenService.setRefreshToken(data.refreshToken);
@@ -54,9 +52,6 @@ export const AuthMiddleware = ({ children }: AuthMiddlewareProps) => {
 };
  
 // Renderiza el componente solo si el usuario tiene el rol requerido.
- 
-import { useAuth as useAuthHook } from '../hooks/useAuth';
- 
 interface RoleMiddlewareProps {
   allowedRoles: string[];
   children: ReactNode;
@@ -68,7 +63,7 @@ export const RoleMiddleware = ({
   children,
   fallback = null,
 }: RoleMiddlewareProps) => {
-  const { user } = useAuthHook();
+  const { user } = useAuth();
  
   if (!user || !allowedRoles.includes(user.role)) {
     return <>{fallback}</>;
