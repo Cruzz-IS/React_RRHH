@@ -22,4 +22,3 @@ export const useRole = (): UseRoleReturn => {
     hasAnyRole:       (roles) => roles.includes(role),
   };
 };
- 

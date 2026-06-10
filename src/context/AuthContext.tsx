@@ -5,12 +5,12 @@ import {
   useMemo,
   useState,
   type ReactNode,
-} from 'react';
-import AuthApi from '../api/endpoints/auth.api';
-import TokenService from '../services/token.service';
-import type { LoginCredentials, UserInfo } from '@/Types/auth.interface';
+} from "react";
+import AuthApi from "../api/endpoints/auth.api";
+import TokenService from "../services/token.service";
+import type { LoginCredentials, UserInfo } from "../Types/auth.interface";
 
-interface AuthContextValue {
+export interface AuthContextValue {
   user: UserInfo | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -20,16 +20,17 @@ interface AuthContextValue {
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
+AuthContext.displayName = "AuthContext";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserInfo | null>(() =>
-    TokenService.getUserInfo<UserInfo>()
+    TokenService.getUserInfo<UserInfo>(),
   );
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const restoreSession = async () => {
-      const accessToken  = TokenService.getAccessToken();
+      const accessToken = TokenService.getAccessToken();
       const refreshToken = TokenService.getRefreshToken();
 
       if (!refreshToken) {
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!accessToken || TokenService.isTokenExpired(accessToken)) {
         try {
           const { data } = await AuthApi.refreshToken({
-            accessToken:  accessToken ?? '',
+            accessToken: accessToken ?? "",
             refreshToken,
           });
           if (data.success && data.accessToken && data.refreshToken) {
@@ -81,7 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(false);
     };
 
-    restoreSession();
+    void restoreSession();
   }, []);
 
   useEffect(() => {
@@ -89,14 +90,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null);
       TokenService.clearAllTokens();
     };
-    window.addEventListener('auth:logout', handleForceLogout);
-    return () => window.removeEventListener('auth:logout', handleForceLogout);
+    window.addEventListener("auth:logout", handleForceLogout);
+    return () => window.removeEventListener("auth:logout", handleForceLogout);
   }, []);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     const { data } = await AuthApi.login(credentials);
     if (!data.success || !data.accessToken || !data.refreshToken) {
-      throw new Error(data.message ?? 'Credenciales inválidas');
+      throw new Error(data.message ?? "Credenciales inválidas");
     }
     TokenService.setAccessToken(data.accessToken);
     TokenService.setRefreshToken(data.refreshToken, credentials.rememberMe);
@@ -129,8 +130,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, isAuthenticated: !!user, isLoading, login, logout, refreshUser }),
-    [user, isLoading, login, logout, refreshUser]
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      isLoading,
+      login,
+      logout,
+      refreshUser,
+    }),
+    [user, isLoading, login, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,132 +1,112 @@
 import axios, {
   type AxiosInstance,
-  type AxiosRequestConfig,
   type AxiosResponse,
   type InternalAxiosRequestConfig,
-} from 'axios';
-import TokenService from '../services/token.service';
- 
- 
+} from "axios";
+import TokenService from "../services/token.service";
+
 const apiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:5014/api',
+  baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:5014/api",
   timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 30_000,
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
+  headers: { "Content-Type": "application/json", Accept: "application/json" },
   withCredentials: true,
 });
- 
-// ── Cola de requests en espera durante refresh ──────────────────
- 
+
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (value: string | null) => void;
-  reject: (reason?: unknown) => void;
+  resolve: (value: string) => void;
+  reject: (reason: unknown) => void;
 }> = [];
- 
+
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach(({ resolve, reject }) => {
     if (error) reject(error);
-    else resolve(token);
+    else resolve(token!);
   });
   failedQueue = [];
 };
- 
-// Agrega el Bearer token a cada request automáticamente
- 
+
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = TokenService.getAccessToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
-  (error) => Promise.reject(error)
+  (error: unknown) => Promise.reject(error),
 );
- 
-// Maneja token expirado y refresca automáticamente
- 
+
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
- 
-  async (error) => {
-    const originalRequest = error.config as AxiosRequestConfig & {
+
+  async (error: unknown) => {
+    if (!axios.isAxiosError(error)) return Promise.reject(error);
+
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
- 
+
     if (error.response?.status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
     }
- 
-    if (originalRequest.url?.includes('/auth/refresh-token')) {
+
+    if (originalRequest.url?.includes("/auth/refresh-token")) {
       TokenService.clearAllTokens();
-      window.dispatchEvent(new CustomEvent('auth:logout'));
+      window.dispatchEvent(new CustomEvent("auth:logout"));
       return Promise.reject(error);
     }
- 
+
     if (isRefreshing) {
-      return new Promise((resolve, reject) => {
+      return new Promise<string>((resolve, reject) => {
         failedQueue.push({ resolve, reject });
-      })
-        .then((token) => {
-          originalRequest.headers = {
-            ...originalRequest.headers,
-            Authorization: `Bearer ${token}`,
-          };
-          return apiClient(originalRequest);
-        })
-        .catch(Promise.reject);
+      }).then((token) => {
+        originalRequest.headers.Authorization = `Bearer ${token}`;
+        return apiClient(originalRequest);
+      });
     }
- 
+
     originalRequest._retry = true;
     isRefreshing = true;
- 
+
     const accessToken = TokenService.getAccessToken();
     const refreshToken = TokenService.getRefreshToken();
- 
+
     if (!refreshToken) {
       TokenService.clearAllTokens();
-      window.dispatchEvent(new CustomEvent('auth:logout'));
+      window.dispatchEvent(new CustomEvent("auth:logout"));
       isRefreshing = false;
       return Promise.reject(error);
     }
- 
+
     try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
-        { accessToken, refreshToken },
-        { withCredentials: true }
+      const { data } = await axios.post<{
+        accessToken: string;
+        refreshToken: string;
+      }>(
+        `${import.meta.env.VITE_API_URL ?? "http://localhost:5014/api"}/auth/refresh-token`,
+        { accessToken: accessToken ?? "", refreshToken },
+        { withCredentials: true },
       );
- 
-      const newAccessToken: string = data.accessToken;
-      const newRefreshToken: string = data.refreshToken;
- 
-      TokenService.setAccessToken(newAccessToken);
-      TokenService.setRefreshToken(newRefreshToken);
- 
-      apiClient.defaults.headers.common['Authorization'] =
-        `Bearer ${newAccessToken}`;
- 
-      processQueue(null, newAccessToken);
- 
-      originalRequest.headers = {
-        ...originalRequest.headers,
-        Authorization: `Bearer ${newAccessToken}`,
-      };
+
+      TokenService.setAccessToken(data.accessToken);
+      TokenService.setRefreshToken(data.refreshToken);
+      apiClient.defaults.headers.common["Authorization"] =
+        `Bearer ${data.accessToken}`;
+
+      processQueue(null, data.accessToken);
+
+      originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
       return apiClient(originalRequest);
-    } catch (refreshError) {
+    } catch (refreshError: unknown) {
       processQueue(refreshError, null);
       TokenService.clearAllTokens();
-      window.dispatchEvent(new CustomEvent('auth:logout'));
+      window.dispatchEvent(new CustomEvent("auth:logout"));
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;
     }
-  }
+  },
 );
- 
+
 export default apiClient;
 
 // import axios from 'axios';

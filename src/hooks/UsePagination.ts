@@ -5,26 +5,30 @@ interface UsePaginationOptions {
   initialPageSize?: number;
 }
  
+interface UsePaginationReturn {
+  pageNumber: number;
+  pageSize: number;
+  setPageNumber: (page: number) => void;
+  setPageSize: (size: number) => void;
+  nextPage: () => void;
+  prevPage: () => void;
+  resetPage: () => void;
+}
+ 
 export const usePagination = ({
   initialPage = 1,
   initialPageSize = 10,
-}: UsePaginationOptions = {}) => {
+}: UsePaginationOptions = {}): UsePaginationReturn => {
   const [pageNumber, setPageNumber] = useState(initialPage);
-  const [pageSize, setPageSize] = useState(initialPageSize);
- 
-  const goToPage = (page: number) => setPageNumber(page);
-  const nextPage = () => setPageNumber((p) => p + 1);
-  const prevPage = () => setPageNumber((p) => Math.max(1, p - 1));
-  const resetPage = () => setPageNumber(1);
+  const [pageSize,   setPageSize]   = useState(initialPageSize);
  
   return {
     pageNumber,
     pageSize,
     setPageNumber,
     setPageSize,
-    goToPage,
-    nextPage,
-    prevPage,
-    resetPage,
+    nextPage:  () => setPageNumber((p) => p + 1),
+    prevPage:  () => setPageNumber((p) => Math.max(1, p - 1)),
+    resetPage: () => setPageNumber(1),
   };
 };
