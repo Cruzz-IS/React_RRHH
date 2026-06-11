@@ -9,7 +9,7 @@ import type {
 
 const AuthApi = {
   login: (credentials: LoginCredentials) =>
-    apiClient.post<AuthResponse>("/auth/login", credentials),
+    apiClient.post<AuthResponse>("/Auth/login", credentials),
 
   register: (data: {
     firstName: string;

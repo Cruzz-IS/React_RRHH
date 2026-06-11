@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
   allowedRoles?: string[];
 }
  
-export const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
+export const ProtectedRoutes = ({ allowedRoles }: ProtectedRouteProps) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const location = useLocation();
  

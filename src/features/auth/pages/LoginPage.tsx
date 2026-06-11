@@ -62,12 +62,11 @@ const LoginPage = () => {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4">
       <div className="w-full max-w-md">
  
-        {/* Header */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-600/30">
             <Shield className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white">BAC Honduras</h1>
+          <h1 className="text-3xl font-bold text-white">Honduras</h1>
           <p className="mt-1 text-sm text-slate-400">Sistema de Recursos Humanos</p>
         </div>
  
