@@ -1,21 +1,35 @@
 import api from '../../api/axios';
-import type { AuthResponse, LoginCredentials, UserInfo } from '../../Types/auth.interface';
+import type {
+  AuthResponse,
+  EmpleadoInfo,
+  LoginCredentials,
+  UserInfo,
+} from '../../Types/auth.interface';
+
+const mapEmpleadoToUserInfo = (empleado: EmpleadoInfo): UserInfo => ({
+  id: empleado.Id,
+  email: empleado.Email,
+  name: empleado.Name,
+  role: empleado.Role,
+  emailConfirmed: empleado.EmailConfirmed,
+});
 
 export const authService = {
 
   login: async (credentials: LoginCredentials): Promise<UserInfo> => {
     const { data } = await api.post<AuthResponse>('/auth/login', credentials);
 
-    if (!data.success || !data.accessToken || !data.refreshToken || !data.user) {
-      throw new Error(data.message || 'Error en el inicio de sesión');
+    if (!data.Success || !data.AccessToken || !data.RefreshToken || !data.Empleado) {
+      throw new Error(data.Message || 'Error en el inicio de sesión');
     }
 
-    localStorage.setItem('accessToken', data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    return data.user;
-    
-    throw new Error(data.message || 'Error en el inicio de sesión');
+    const userInfo = mapEmpleadoToUserInfo(data.Empleado);
+
+    localStorage.setItem('accessToken', data.AccessToken);
+    localStorage.setItem('refreshToken', data.RefreshToken);
+    localStorage.setItem('user', JSON.stringify(userInfo));
+
+    return userInfo;
   },
 
   logout: async (): Promise<void> => {

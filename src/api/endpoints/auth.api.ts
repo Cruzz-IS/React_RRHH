@@ -20,28 +20,28 @@ const AuthApi = {
     phoneNumber?: string;
     position?: string;
     department?: string;
-  }) => apiClient.post<AuthResponse>("/auth/register", data),
+  }) => apiClient.post<AuthResponse>("/Auth/register", data),
 
   refreshToken: (data: RefreshTokenRequest) =>
-    apiClient.post<AuthResponse>("/auth/refresh-token", data),
+    apiClient.post<AuthResponse>("/Auth/refresh-token", data),
 
   logout: (refreshToken: string) =>
-    apiClient.post<void>("/auth/logout", { refreshToken }),
+    apiClient.post<void>("/Auth/logout", { refreshToken }),
 
-  me: () => apiClient.get<UserInfo>("/auth/me"),
+  me: () => apiClient.get<UserInfo>("/Auth/me"),
 
   changePassword: (data: ChangePasswordData) =>
-    apiClient.post<void>("/auth/change-password", data),
+    apiClient.post<void>("/Auth/change-password", data),
 
   forgotPassword: (email: string) =>
-    apiClient.post<void>("/auth/forgot-password", { email }),
+    apiClient.post<void>("/Auth/forgot-password", { email }),
 
   resetPassword: (data: {
     email: string;
     token: string;
     newPassword: string;
     confirmNewPassword: string;
-  }) => apiClient.post<void>("/auth/reset-password", data),
+  }) => apiClient.post<void>("/Auth/reset-password", data),
 };
 
 export default AuthApi;

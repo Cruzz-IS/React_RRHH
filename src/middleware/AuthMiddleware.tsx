@@ -27,10 +27,10 @@ export const AuthMiddleware = ({ children }: AuthMiddlewareProps) => {
             accessToken:  accessToken ?? '',
             refreshToken,
           });
-          if (data.success && data.accessToken && data.refreshToken) {
-            TokenService.setAccessToken(data.accessToken);
-            TokenService.setRefreshToken(data.refreshToken);
-            if (data.user) TokenService.setUserInfo(data.user);
+          if (data.Success && data.AccessToken && data.RefreshToken) {
+            TokenService.setAccessToken(data.AccessToken);
+            TokenService.setRefreshToken(data.RefreshToken);
+            if (data.Empleado) TokenService.setUserInfo(data.Empleado);
           } else {
             await logout();
             navigate('/login', { replace: true });

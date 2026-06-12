@@ -7,8 +7,22 @@ import {
 } from "react";
 import AuthApi from "../api/endpoints/auth.api";
 import TokenService from "../services/token.service";
-import type { LoginCredentials, UserInfo } from "../Types/auth.interface";
+import type {
+  AuthResponse,
+  LoginCredentials,
+  UserInfo,
+} from "../Types/auth.interface";
 import { AuthContext, type AuthContextValue } from "./AuthContext";
+
+const mapEmpleadoToUserInfo = (
+  empleado: NonNullable<AuthResponse["Empleado"]>,
+): UserInfo => ({
+  id: empleado.Id,
+  email: empleado.Email,
+  name: empleado.Name,
+  role: empleado.Role,
+  emailConfirmed: empleado.EmailConfirmed,
+});
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserInfo | null>(() =>
@@ -34,12 +48,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             accessToken: accessToken ?? "",
             refreshToken,
           });
-          if (data.success && data.accessToken && data.refreshToken) {
-            TokenService.setAccessToken(data.accessToken);
-            TokenService.setRefreshToken(data.refreshToken);
-            if (data.user) {
-              TokenService.setUserInfo(data.user);
-              setUser(data.user);
+          if (data.Success && data.AccessToken && data.RefreshToken) {
+            TokenService.setAccessToken(data.AccessToken);
+            TokenService.setRefreshToken(data.RefreshToken);
+            if (data.Empleado) {
+              const userInfo = mapEmpleadoToUserInfo(data.Empleado);
+              TokenService.setUserInfo(userInfo);
+              setUser(userInfo);
             }
           } else {
             TokenService.clearAllTokens();
@@ -84,14 +99,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     const { data } = await AuthApi.login(credentials);
-    if (!data.success || !data.accessToken || !data.refreshToken) {
-      throw new Error(data.message ?? "Credenciales inválidas");
+    if (!data.Success || !data.AccessToken || !data.RefreshToken) {
+      throw new Error(data.Message ?? "Credenciales inválidas");
     }
-    TokenService.setAccessToken(data.accessToken);
-    TokenService.setRefreshToken(data.refreshToken, credentials.rememberMe);
-    if (data.user) {
-      TokenService.setUserInfo(data.user);
-      setUser(data.user);
+    TokenService.setAccessToken(data.AccessToken);
+    TokenService.setRefreshToken(data.RefreshToken, credentials.RememberMe);
+    if (data.Empleado) {
+      const userInfo = mapEmpleadoToUserInfo(data.Empleado);
+      TokenService.setUserInfo(userInfo);
+      setUser(userInfo);
     }
   }, []);
 

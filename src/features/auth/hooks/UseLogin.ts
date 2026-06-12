@@ -1,37 +1,46 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import type { LoginFormValues } from '../schemas/login.schema';
-import { useAuth } from '@/hooks/useAuth';
- 
-export const useLogin = (redirectTo = '/dashboard') => {
+import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
+import { useAuth } from "@/hooks/useAuth";
+import type { LoginFormValues } from "../schemas/login.schema";
+
+const extractMessage = (err: unknown): string => {
+  if (isAxiosError(err)) {
+    const msg = err.response?.data?.Message ?? err.response?.data?.message;
+    return typeof msg === "string" ? msg : "Error al iniciar sesión";
+  }
+  if (err instanceof Error) return err.message;
+  return "Error al iniciar sesión";
+};
+
+interface UseLoginReturn {
+  handleLogin: (values: LoginFormValues) => Promise<void>;
+  error: string | null;
+  isLoading: boolean;
+  clearError: () => void;
+}
+
+export const useLogin = (redirectTo = "/dashboard"): UseLoginReturn => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
- 
-  const handleLogin = async (values: LoginFormValues) => {
-    setError(null);
-    setIsLoading(true);
-    try {
-      await login(values);
-      navigate(redirectTo, { replace: true });
-    } catch (err: unknown) {
-        const msg = (() => {
-          if (typeof err === 'object' && err !== null) {
-            const e = err as {
-              response?: { data?: { message?: string } };
-              message?: string;
-            };
-            return e.response?.data?.message ?? e.message ?? 'Error al iniciar sesión';
-          }
-          if (typeof err === 'string') return err;
-          return 'Error al iniciar sesión';
-        })();
-        setError(msg);
-    } finally {
-      setIsLoading(false);
-    }
-  };
- 
+  const [isLoading, setLoading] = useState(false);
+
+  const handleLogin = useCallback(
+    async (values: LoginFormValues) => {
+      setError(null);
+      setLoading(true);
+      try {
+        await login(values);
+        navigate(redirectTo, { replace: true });
+      } catch (err: unknown) {
+        setError(extractMessage(err));
+      } finally {
+        setLoading(false);
+      }
+    },
+    [login, navigate, redirectTo],
+  );
+
   return { handleLogin, error, isLoading, clearError: () => setError(null) };
 };
