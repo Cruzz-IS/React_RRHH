@@ -143,7 +143,7 @@ const DashboardPage = () => {
               <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">BAC Honduras</p>
+              <p className="text-sm font-semibold text-white">Honduras</p>
               <p className="text-xs text-slate-400">Sistema RRHH</p>
             </div>
           </div>
@@ -153,7 +153,6 @@ const DashboardPage = () => {
                 <User className="h-4 w-4 text-slate-300" />
               </div>
               <div className="hidden sm:block">
-                {/* user.name: campo normalizado del backend */}
                 <p className="text-sm font-medium text-white">
                   {user?.name ?? "—"}
                 </p>
