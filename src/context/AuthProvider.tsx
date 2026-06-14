@@ -102,8 +102,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!data.Success || !data.AccessToken || !data.RefreshToken) {
       throw new Error(data.Message ?? "Credenciales inválidas");
     }
+
     TokenService.setAccessToken(data.AccessToken);
     TokenService.setRefreshToken(data.RefreshToken, credentials.RememberMe);
+    
     if (data.Empleado) {
       const userInfo = mapEmpleadoToUserInfo(data.Empleado);
       TokenService.setUserInfo(userInfo);

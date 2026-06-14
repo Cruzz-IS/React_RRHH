@@ -179,7 +179,7 @@ const DashboardPage = () => {
       <main className="mx-auto max-w-7xl px-6 py-8">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white">
-            Bienvenido, {user?.name ?? "Usuario"} 👋
+            Bienvenido, {user?.name ?? "Usuario"}
           </h1>
           <p className="mt-1 text-sm text-slate-400">
             {new Date().toLocaleDateString("es-HN", {

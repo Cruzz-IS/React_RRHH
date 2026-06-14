@@ -6,22 +6,22 @@ import axios, {
 import TokenService from "../services/token.service";
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:5014/api",
-  timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 30_000,
-  headers: { "Content-Type": "application/json", Accept: "application/json" },
+  baseURL:         import.meta.env.VITE_API_URL ?? "http://localhost:5014/api",
+  timeout:         Number(import.meta.env.VITE_API_TIMEOUT) || 30_000,
+  headers:         { "Content-Type": "application/json", Accept: "application/json" },
   withCredentials: true,
 });
 
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (value: string) => void;
-  reject: (reason: unknown) => void;
+  reject:  (reason: unknown) => void;
 }> = [];
 
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach(({ resolve, reject }) => {
     if (error) reject(error);
-    else resolve(token!);
+    else       resolve(token!);
   });
   failedQueue = [];
 };
@@ -32,7 +32,7 @@ apiClient.interceptors.request.use(
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
-  (error: unknown) => Promise.reject(error),
+  (error: unknown) => Promise.reject(error)
 );
 
 apiClient.interceptors.response.use(
@@ -41,15 +41,14 @@ apiClient.interceptors.response.use(
   async (error: unknown) => {
     if (!axios.isAxiosError(error)) return Promise.reject(error);
 
-    const originalRequest = error.config as InternalAxiosRequestConfig & {
-      _retry?: boolean;
-    };
+    const originalRequest = error.config as
+      InternalAxiosRequestConfig & { _retry?: boolean };
 
     if (error.response?.status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
     }
 
-    if (originalRequest.url?.includes("/auth/refresh-token")) {
+    if (originalRequest.url?.includes("/Auth/refresh-token")) {
       TokenService.clearAllTokens();
       window.dispatchEvent(new CustomEvent("auth:logout"));
       return Promise.reject(error);
@@ -65,9 +64,9 @@ apiClient.interceptors.response.use(
     }
 
     originalRequest._retry = true;
-    isRefreshing = true;
+    isRefreshing            = true;
 
-    const accessToken = TokenService.getAccessToken();
+    const accessToken  = TokenService.getAccessToken();
     const refreshToken = TokenService.getRefreshToken();
 
     if (!refreshToken) {
@@ -78,23 +77,24 @@ apiClient.interceptors.response.use(
     }
 
     try {
+      const baseURL = import.meta.env.VITE_API_URL ?? "http://localhost:5014/api";
       const { data } = await axios.post<{
-        accessToken: string;
-        refreshToken: string;
+        AccessToken: string;
+        RefreshToken: string;
       }>(
-        `${import.meta.env.VITE_API_URL ?? "http://localhost:5014/api"}/auth/refresh-token`,
+        `${baseURL}/Auth/refresh-token`,
         { accessToken: accessToken ?? "", refreshToken },
-        { withCredentials: true },
+        { withCredentials: true }
       );
 
-      TokenService.setAccessToken(data.accessToken);
-      TokenService.setRefreshToken(data.refreshToken);
+      TokenService.setAccessToken(data.AccessToken);
+      TokenService.setRefreshToken(data.RefreshToken);
       apiClient.defaults.headers.common["Authorization"] =
-        `Bearer ${data.accessToken}`;
+        `Bearer ${data.AccessToken}`;
 
-      processQueue(null, data.accessToken);
+      processQueue(null, data.AccessToken);
 
-      originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+      originalRequest.headers.Authorization = `Bearer ${data.AccessToken}`;
       return apiClient(originalRequest);
     } catch (refreshError: unknown) {
       processQueue(refreshError, null);
@@ -104,7 +104,7 @@ apiClient.interceptors.response.use(
     } finally {
       isRefreshing = false;
     }
-  },
+  }
 );
 
 export default apiClient;
