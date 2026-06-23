@@ -69,7 +69,6 @@ const router = createBrowserRouter([
         ],
       },
 
-      //  Rutas protegidas, solo Admin ───────────────────────
       {
         element: (
           <Suspense fallback={<Spinner />}>
@@ -77,7 +76,6 @@ const router = createBrowserRouter([
           </Suspense>
         ),
         children: [
-          // { path: '/configuracion', element: <ConfiguracionPage /> },
         ],
       },
 
